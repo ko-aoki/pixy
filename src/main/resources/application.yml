@@ -1,0 +1,6 @@
+## YAML Template.
+pixy:
+  application.name: YSK e-com - PIxY/1.0
+  service.account.id: pixy-212@pixyprj-1327.iam.gserviceaccount.com
+  service.account.user: ye-aoki@beadsan.com
+  p12file.path: /Users/ko-aoki/dev/Java/ide/ws/pixy/src/main/resources/pixyPrj-fb3b842644ce.p12
