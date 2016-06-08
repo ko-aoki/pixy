@@ -1,7 +1,6 @@
-package jp.co.ysk.pixy.repository;
+package jp.co.ysk.pixy.service;
 
 import com.google.api.client.util.DateTime;
-import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -25,13 +24,13 @@ import java.util.TimeZone;
 // アプリケーションクラスを指定
 @SpringApplicationConfiguration(PixyApplication.class)
 @WebIntegrationTest
-public class GoogleCalendarRepositoryTest {
+public class GoogleCalendarSharedServiceTest {
     @Autowired
-    GoogleCalendarRepository repo;
+    GoogleCalendarSharedService service;
 
     @Test
     public void listServiceAccountUserCalendarEvent() throws Exception {
-        List<Event> events = repo.listServiceAccountUserCalendarEvent();
+        List<Event> events = service.listServiceAccountUserCalendarEvent();
         for(Event event : events) {
             System.out.println(event);
         }
@@ -39,7 +38,8 @@ public class GoogleCalendarRepositoryTest {
 
     @Test
     public void listCalendarEvent() {
-        List<Event> events = repo.listCalendarEvent("kaoki@beadsan.com");
+        List<Event> events = service.listCalendarEvent("kaoki@beadsan.com");
+//        List<Event> events = service.listCalendarEvent("ye-aoki@beadsan.com");
         for(Event event : events) {
             System.out.println(event);
         }
@@ -62,14 +62,14 @@ public class GoogleCalendarRepositoryTest {
         // リソースのメールアドレス
         eventAttendee.setEmail("beadsan.com_35323735313334362d393331@resource.calendar.google.com");
         event.setAttendees(Arrays.asList(eventAttendee));
-        Event result = repo.addEvent("kaoki@beadsan.com", event);
+        Event result = service.addEvent("kaoki@beadsan.com", event);
         System.out.println(result.getId());
     }
 
     @Test
     public void deleteServiceAccountEvent() {
 
-        repo.deleteServiceAccountEvent("1gnkfqa6r71hd0v4kjnm7ptmbk");
+        service.deleteServiceAccountEvent("1gnkfqa6r71hd0v4kjnm7ptmbk");
     }
 
     @Test
@@ -82,37 +82,37 @@ public class GoogleCalendarRepositoryTest {
         String start = "2016-06-04T13:00";
         String end = "2016-06-04T14:00";
         System.out.println(
-                repo.isExistEvent(account,
+                service.isExistEvent(account,
                         start, end)
         );
         start = "2016-06-04T14:22";
         end = "2016-06-04T14:42";
         System.out.println(
-                repo.isExistEvent(account,
+                service.isExistEvent(account,
                         start, end)
         );
         start = "2016-06-04T14:40";
         end = "2016-06-04T14:43";
         System.out.println(
-                repo.isExistEvent(account,
+                service.isExistEvent(account,
                         start, end)
         );
         start = "2016-06-04T14:40";
         end = "2016-06-04T14:42";
         System.out.println(
-                repo.isExistEvent(account,
+                service.isExistEvent(account,
                         start, end)
         );
         start = "2016-06-04T15:42";
         end = "2016-06-04T15:43";
         System.out.println(
-                repo.isExistEvent(account,
+                service.isExistEvent(account,
                         start, end)
         );
         start = "2016-06-04T15:46";
         end = "2016-06-04T15:47";
         System.out.println(
-                repo.isExistEvent(account,
+                service.isExistEvent(account,
                         start, end)
         );
     }
@@ -127,31 +127,31 @@ public class GoogleCalendarRepositoryTest {
         String start = "2016-06-04T13:00";
         String end = "2016-06-04T14:00";
         System.out.println(
-                repo.isExistResourceEvent(resourceAccount,
+                service.isExistResourceEvent(resourceAccount,
                         start, end)
         );
         start = "2016-06-04T14:40";
         end = "2016-06-04T14:43";
         System.out.println(
-                repo.isExistResourceEvent(resourceAccount,
+                service.isExistResourceEvent(resourceAccount,
                         start, end)
         );
         start = "2016-06-04T14:40";
         end = "2016-06-04T14:42";
         System.out.println(
-                repo.isExistResourceEvent(resourceAccount,
+                service.isExistResourceEvent(resourceAccount,
                         start, end)
         );
         start = "2016-06-04T15:42";
         end = "2016-06-04T15:43";
         System.out.println(
-                repo.isExistResourceEvent(resourceAccount,
+                service.isExistResourceEvent(resourceAccount,
                         start, end)
         );
         start = "2016-06-04T15:46";
         end = "2016-06-04T15:47";
         System.out.println(
-                repo.isExistResourceEvent(resourceAccount,
+                service.isExistResourceEvent(resourceAccount,
                         start, end)
         );
     }

@@ -1,120 +1,31 @@
-package jp.co.ysk.pixy.repository;
+package jp.co.ysk.pixy.service;
 
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 /**
  *
- * Googleカレンダーを操作するリポジトリクラス.
+ * Googleカレンダーを操作するサービスクラス.
  * @author ko-aoki
  *
  */
-@Repository
-public class GoogleCalendarRepository {
-
-	/**
-	 * アプリケーション名
-	 * Be sure to specify the name of your application. If the application name is {@code null} or
-	 * blank, the application will log a warning. Suggested format is "MyCompany-ProductName/1.0".
-	 */
-	@Value("${pixy.application.name}")
-	private String APPLICATION_NAME;
-
-	/** P12ファイル納箇所. */
-	@Value("${pixy.p12file.path}")
-	private String P12_PATH;
-
-	/** サービスアカウントID */
-	@Value("${pixy.service.account.id}")
-	private String SERVICE_ACCOUNT_ID;
-
-	/** サービスアカウントユーザ */
-	@Value("${pixy.service.account.user}")
-	private String SERVICE_ACCOUNT_USER;
-
-	/** サービスアカウントユーザの資格情報 */
-	private Credential CREDENTIAL_SERVICE_ACCOUNT_USER = null;
-
-	final HttpTransport TRANSPORT = new NetHttpTransport();
-	final JsonFactory JSON_FACTORY = new JacksonFactory();
-
-	/** 資格情報 */
-	private GoogleCredential credential = null;
-
-	/**
-	 * サービスアカウントユーザの資格情報を設定します.
-	 * @return 資格情報
-	 */
-	private void authorizeServiceAccountUser() {
-
-		if (CREDENTIAL_SERVICE_ACCOUNT_USER != null) {
-			return;
-		}
-		try {
-			this.CREDENTIAL_SERVICE_ACCOUNT_USER = new GoogleCredential.Builder()
-					.setTransport(TRANSPORT)
-					.setJsonFactory(JSON_FACTORY)
-					.setServiceAccountId(SERVICE_ACCOUNT_ID)
-					.setServiceAccountPrivateKeyFromP12File(new File(P12_PATH))
-					.setServiceAccountScopes(Collections.singleton(CalendarScopes.CALENDAR))
-					.setServiceAccountUser(SERVICE_ACCOUNT_USER)
-					.build();
-		} catch (GeneralSecurityException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-
-	}
-
-	/**
-	 * 資格情報を設定します.
-	 * @param account 操作したいカレンダーのアカウント
-	 * @return 資格情報
-	 */
-	private void authorize(String account) {
-
-		// 同一資格情報なら作成しない
-		if (this.credential != null && account.equals(credential.getServiceAccountUser())) {
-			return;
-		}
-		try {
-			this.credential = new GoogleCredential.Builder()
-					.setTransport(TRANSPORT)
-					.setJsonFactory(JSON_FACTORY)
-					.setServiceAccountId(SERVICE_ACCOUNT_ID)
-					.setServiceAccountPrivateKeyFromP12File(new File(P12_PATH))
-					.setServiceAccountScopes(Collections.singleton(CalendarScopes.CALENDAR))
-					.setServiceAccountUser(account)
-					.build();
-		} catch (GeneralSecurityException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-
-	}
+@Service
+public class GoogleCalendarSharedService extends AbstractGoogleService {
 
 	/**
 	 * カレンダークライアントクラスを作成します.
@@ -122,6 +33,9 @@ public class GoogleCalendarRepository {
 	 * @return
 	 */
 	private com.google.api.services.calendar.Calendar createClient(Credential credential) {
+
+		HttpTransport TRANSPORT = new NetHttpTransport();
+		JsonFactory JSON_FACTORY = new JacksonFactory();
 
 		com.google.api.services.calendar.Calendar client
 				= new com.google.api.services.calendar.Calendar.Builder(TRANSPORT, JSON_FACTORY, credential)
