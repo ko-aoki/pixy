@@ -6,20 +6,21 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.gmail.GmailScopes;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Google APIを使用する抽象クラス.
  *
  * Created by ko-aoki on 2016/06/08.
  */
-public class AbstractGoogleService {
+public abstract class AbstractGoogleService {
 
 	/**
 	 * アプリケーション名
@@ -83,7 +84,11 @@ public class AbstractGoogleService {
 			return;
 		}
 		this.CREDENTIAL_SERVICE_ACCOUNT_USER =
-				this.create(SERVICE_ACCOUNT_USER, Collections.singleton(CalendarScopes.CALENDAR));
+				this.create(SERVICE_ACCOUNT_USER,
+						Arrays.asList(
+								CalendarScopes.CALENDAR,
+								GmailScopes.GMAIL_COMPOSE
+								));
 	}
 
 	/**
@@ -98,6 +103,10 @@ public class AbstractGoogleService {
 			return;
 		}
 		this.credential =
-				this.create(account, Collections.singleton(CalendarScopes.CALENDAR));
+				this.create(account,
+						Arrays.asList(
+								CalendarScopes.CALENDAR,
+								GmailScopes.GMAIL_COMPOSE
+						));
 	}
 }
