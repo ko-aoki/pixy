@@ -1,6 +1,8 @@
 package jp.co.ysk.pixy.service;
 
 import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -33,6 +35,15 @@ public class GoogleCalendarSharedServiceTest {
         List<Event> events = service.listServiceAccountUserCalendarEvent();
         for(Event event : events) {
             System.out.println(event);
+        }
+    }
+
+    @Test
+    public void listResource(){
+
+        List<CalendarListEntry> calendarListEntries = service.listResource();
+        for (CalendarListEntry entry : calendarListEntries) {
+            System.out.println(entry);
         }
     }
 
@@ -70,6 +81,35 @@ public class GoogleCalendarSharedServiceTest {
     public void deleteServiceAccountEvent() {
 
         service.deleteServiceAccountEvent("1gnkfqa6r71hd0v4kjnm7ptmbk");
+    }
+
+
+    @Test
+    public void updateEvent() {
+
+        Event event = new Event();
+        event.setSummary("更新前イベントです");
+        Date startDate = new Date();
+        Date endDate = new Date(startDate.getTime() + 3600000);
+        DateTime start = new DateTime(startDate, TimeZone.getTimeZone("UTC"));
+        event.setStart(new EventDateTime().setDateTime(start));
+        DateTime end = new DateTime(endDate, TimeZone.getTimeZone("UTC"));
+        event.setEnd(new EventDateTime().setDateTime(end));
+        // 明示しないと表示されない
+        event.setLocation("会議室A");
+        EventAttendee eventAttendee = new EventAttendee();
+        eventAttendee.setId("52751346-931");
+        // リソースのメールアドレス
+        eventAttendee.setEmail("beadsan.com_35323735313334362d393331@resource.calendar.google.com");
+        event.setAttendees(Arrays.asList(eventAttendee));
+        Event result = service.addEvent("kaoki@beadsan.com", event);
+
+        result.setSummary("更新後イベント");
+        result.setDescription("更新後");
+        Event update = service.updateEvent("kaoki@beadsan.com", result);
+        System.out.println(
+                "-------------------------------------------------------------------");
+        System.out.println(update.getStatus());
     }
 
     @Test

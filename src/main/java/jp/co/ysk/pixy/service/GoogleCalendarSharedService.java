@@ -5,6 +5,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
@@ -54,6 +55,30 @@ public class GoogleCalendarSharedService extends AbstractGoogleService {
 		this.authorizeServiceAccountUser();
 		com.google.api.services.calendar.Calendar client = this.createClient(CREDENTIAL_SERVICE_ACCOUNT_USER);
 		return this.getEventItems(SERVICE_ACCOUNT_USER, client);
+	}
+
+	/**
+	 * リソースリストを取得します.
+	 * @return リソースリスト
+	 */
+	public List<CalendarListEntry> listResource() {
+
+		List<CalendarListEntry> resourceList = new ArrayList<>();
+		this.authorizeServiceAccountUser();
+		com.google.api.services.calendar.Calendar client = this.createClient(CREDENTIAL_SERVICE_ACCOUNT_USER);
+		CalendarList feed = null;
+		try {
+			// カレンダーリストの取得
+			feed = client.calendarList().list().execute();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		for (CalendarListEntry entry : feed.getItems()) {
+			if (entry.getId().endsWith("resource.calendar.google.com")) {
+				resourceList.add(entry);
+			}
+		}
+		return  resourceList;
 	}
 
 	/**
@@ -196,7 +221,7 @@ public class GoogleCalendarSharedService extends AbstractGoogleService {
 	}
 
 	/**
-	 * サービスアカウントユーザにイベントを削除します.
+	 * サービスアカウントユーザのイベントを削除します.
 	 * @param id イベントID
 	 */
 	public void deleteServiceAccountEvent(String id) {
@@ -218,12 +243,64 @@ public class GoogleCalendarSharedService extends AbstractGoogleService {
 	public void deleteEvent(String account, String id) {
 
 		this.authorize(account);
+		com.google.api.services.calendar.Calendar client = this.createClient(this.credential);
 		try {
-			com.google.api.services.calendar.Calendar client = this.createClient(this.credential);
 			client.events().delete(account, id).execute();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * サービスアカウントユーザのイベントを更新します.
+	 * @param event イベント
+	 * @return 更新したイベント
+	 */
+	public Event updateServiceAccountEvent(Event event) {
+
+		this.authorizeServiceAccountUser();
+		com.google.api.services.calendar.Calendar client = this.createClient(CREDENTIAL_SERVICE_ACCOUNT_USER);
+		Event update = null;
+		try {
+			Event tgtEvent = client.events().get(SERVICE_ACCOUNT_USER, event.getId()).execute();
+
+			this.mapEvent(tgtEvent, event);
+			update = client.events().update(SERVICE_ACCOUNT_USER, event.getId(), event).execute();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return update;
+	}
+
+	private void mapEvent(Event tgtEvent, Event newEvent) {
+
+		// TODO 設定項目検討
+		tgtEvent.setSummary(newEvent.getSummary());
+		tgtEvent.setLocation(newEvent.getLocation());
+		tgtEvent.setAttendees(newEvent.getAttendees());
+		tgtEvent.setStart(newEvent.getStart());
+		tgtEvent.setEnd(newEvent.getEnd());
+	}
+
+	/**
+	 * 指定されたアカウントのイベントを更新します.
+	 * @param account アカウント
+	 * @param event イベント
+	 * @param event 更新したイベント
+	 */
+	public Event updateEvent(String account, Event event) {
+
+		this.authorize(account);
+		Event update = null;
+		com.google.api.services.calendar.Calendar client = this.createClient(this.credential);
+		try {
+			Event tgtEvent = client.events().get(account, event.getId()).execute();
+			this.mapEvent(tgtEvent, event);
+			update = client.events().update(account, tgtEvent.getId(), tgtEvent).execute();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return update;
 	}
 
 	/**
