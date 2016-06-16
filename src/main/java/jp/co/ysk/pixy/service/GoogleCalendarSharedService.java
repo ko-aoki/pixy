@@ -141,37 +141,37 @@ public class GoogleCalendarSharedService extends AbstractGoogleService {
 
 	/**
 	 * 指定された範囲内のイベントの有無を判定します.
-	 * @param start 開始日時(yyyy-MM-dd'T'HH:mm)
-	 * @param end 終了日時(yyyy-MM-dd'T'HH:mm)
+	 * @param start 開始日時(yyyy/MM/dd HH:mm)
+	 * @param end 終了日時(yyyy/MM/dd HH:mm)
 	 * @param events イベントリスト
 	 * @return true: あり false:なし
 	 * @throws ParseException
      */
 	private boolean isExistEvent(String start, String end, List<Event> events) throws ParseException {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		Date tgtStart = sdf.parse(start);
 		Date tgtEnd = sdf.parse(end);
 
 		for (Event event : events) {
             Date eventStart = new Date(event.getStart().getDateTime().getValue());
             Date eventEnd = new Date(event.getEnd().getDateTime().getValue());
-            if (tgtStart.compareTo(eventEnd) < 0 &&
-					tgtEnd.compareTo(eventStart) > 0 &&
-                    tgtEnd.compareTo(eventEnd) < 0) {
+            if (tgtStart.compareTo(eventEnd) <= 0 &&
+					tgtEnd.compareTo(eventStart) >= 0 &&
+                    tgtEnd.compareTo(eventEnd) <= 0) {
 				return true;
             }
-            if (tgtStart.compareTo(eventStart) < 0 &&
-                    tgtEnd.compareTo(eventEnd) > 0) {
+            if (tgtStart.compareTo(eventStart) <= 0 &&
+                    tgtEnd.compareTo(eventEnd) >= 0) {
 				return true;
             }
-            if (tgtStart.compareTo(eventStart) > 0 &&
-                    tgtEnd.compareTo(eventEnd) < 0) {
+            if (tgtStart.compareTo(eventStart) >= 0 &&
+                    tgtEnd.compareTo(eventEnd) <= 0) {
 				return true;
             }
-            if (tgtStart.compareTo(eventStart) > 0 &&
-					tgtStart.compareTo(eventEnd) < 0 &&
-					tgtEnd.compareTo(eventEnd) > 0) {
+            if (tgtStart.compareTo(eventStart) >= 0 &&
+					tgtStart.compareTo(eventEnd) <= 0 &&
+					tgtEnd.compareTo(eventEnd) >= 0) {
 				return true;
             }
         }
@@ -205,7 +205,7 @@ public class GoogleCalendarSharedService extends AbstractGoogleService {
 		this.authorize(account);
 		com.google.api.services.calendar.Calendar client = this.createClient(this.credential);
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 			if (
 				this.isExistEvent(
 						account,

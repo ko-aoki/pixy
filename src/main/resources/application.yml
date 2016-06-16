@@ -4,3 +4,22 @@ pixy:
   service.account.id: pixy-212@pixyprj-1327.iam.gserviceaccount.com
   service.account.user: ye-aoki@beadsan.com
   p12file.path: /Users/ko-aoki/dev/Java/ide/ws/pixy/src/main/resources/pixyPrj-f5254376db31.p12
+spring:
+  datasource:
+#    driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+#    url: jdbc:log4jdbc:mysql://192.168.56.101:3306/devdb
+    url: jdbc:mysql://192.168.56.101:3306/devdb
+#    driverClassName: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
+    username: devMaria
+    password: devMaria
+  jpa:
+    hibernate:
+      show-sql: true
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQLDialect
+  data:
+    jpa:
+      repositories:
+        enabled: true
+  thymeleaf.cache: false
