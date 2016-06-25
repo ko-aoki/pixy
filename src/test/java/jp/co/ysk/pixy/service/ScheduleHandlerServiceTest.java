@@ -9,6 +9,7 @@ import jp.co.ysk.pixy.PixyApplication;
 import jp.co.ysk.pixy.dto.ScheduleDto;
 import jp.co.ysk.pixy.dto.ScheduleListCondDto;
 import jp.co.ysk.pixy.dto.ScheduleRegisterDto;
+import jp.co.ysk.pixy.entity.TEventTmp;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,14 @@ import java.util.TimeZone;
 public class ScheduleHandlerServiceTest {
     @Autowired
     ScheduleHandlerService service;
+
+
+    @Test
+    public void getxx() {
+
+        TEventTmp tEventTmpByTEventTmpId = service.getTEventTmpByTEventTmpId(7);
+        System.out.println(tEventTmpByTEventTmpId);
+    }
 
     @Test
     public void findSchedule() {

@@ -42,6 +42,12 @@ public class ScheduleHandlerService {
     @Autowired
     private MEmployeeRepository empRepo;
 
+    public TEventTmp getTEventTmpByTEventTmpId(long tEventTmpId) {
+
+        TEventTmp tEventTmp = eventRepo.selectByTEventTmpId(tEventTmpId);
+        return null;
+    }
+
     /**
      * 指定の条件でスケジュールを検索します。
      * @param cond 検索条件
