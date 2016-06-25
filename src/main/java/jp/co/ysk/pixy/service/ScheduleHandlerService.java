@@ -4,13 +4,17 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
+import jp.co.ysk.pixy.dto.ScheduleDto;
+import jp.co.ysk.pixy.dto.ScheduleListCondDto;
 import jp.co.ysk.pixy.dto.ScheduleRegisterDto;
 import jp.co.ysk.pixy.entity.MEmployee;
 import jp.co.ysk.pixy.entity.TAttendees;
 import jp.co.ysk.pixy.entity.TEventTmp;
 import jp.co.ysk.pixy.repository.MEmployeeRepository;
 import jp.co.ysk.pixy.repository.TEventTmpRepository;
+import jp.co.ysk.pixy.repository.TEventTmpSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +41,41 @@ public class ScheduleHandlerService {
 
     @Autowired
     private MEmployeeRepository empRepo;
+
+    /**
+     * 指定の条件でスケジュールを検索します。
+     * @param cond 検索条件
+     * @return　スケジュールリスト
+     */
+    public List<ScheduleDto> findSchedule(ScheduleListCondDto cond) {
+
+        List<TEventTmp> scheduleList = eventRepo
+                .findAll(Specifications
+                        .where(TEventTmpSpecification.startLessThanTarget(cond.getSearchDate()))
+                        .and(TEventTmpSpecification.endGreaterThanTarget(cond.getSearchDate()))
+//                        .and(TEventTmpSpecification.visitorNameContains(cond.getVisitorName()))
+//                        .and(TEventTmpSpecification.companyNameContains(cond.getCompanyName()))
+                );
+
+        List<ScheduleDto> scheduleDtoList = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
+//        for (TEventTmp schedule : scheduleList) {
+//            ScheduleDto scheduleDto = new ScheduleDto();
+//            scheduleDto.setScheduleDate(sdf.format(schedule.getStartDatetime()));
+//            scheduleDto.setScheduleStartTime(sdfTime.format(schedule.getStartDatetime()));
+//            scheduleDto.setScheduleEndTime(sdfTime.format(schedule.getEndDatetime()));
+//            // TODO oneToManyじゃないようなのでEntity修正
+////			scheduleDto.setResourceName(schedule.getTResourceCollection().);
+//            scheduleDto.setVisitorCompanyName(schedule.getCustomerId().getBusinessConnectionId().getBusinessConnectionName());
+//            // TODO テーブルレイアウト変更する
+////			scheduleDto.setChargePersonName(schedule.);
+//            // TODO テーブルレイアウト変更する
+//            scheduleDto.setVisitorName(schedule.getCustomerId().getFamilyName());
+//            scheduleDtoList.add(scheduleDto);
+//        }
+        return scheduleDtoList;
+    }
 
     /**
      * スケジュールを登録します.

@@ -6,6 +6,8 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 import jp.co.ysk.pixy.PixyApplication;
+import jp.co.ysk.pixy.dto.ScheduleDto;
+import jp.co.ysk.pixy.dto.ScheduleListCondDto;
 import jp.co.ysk.pixy.dto.ScheduleRegisterDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +31,17 @@ import java.util.TimeZone;
 public class ScheduleHandlerServiceTest {
     @Autowired
     ScheduleHandlerService service;
+
+    @Test
+    public void findSchedule() {
+
+        ScheduleListCondDto cond = new ScheduleListCondDto();
+        cond.setSearchDate("2016/06/16");
+        cond.setCompanyName("テスト");
+        cond.setVisitorName("");
+        List<ScheduleDto> list = service.findSchedule(cond);
+        System.out.println(list);
+    }
 
     @Test
     public void listServiceAccountUserCalendarEvent() throws Exception {
