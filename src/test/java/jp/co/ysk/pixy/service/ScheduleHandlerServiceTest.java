@@ -1,10 +1,5 @@
 package jp.co.ysk.pixy.service;
 
-import com.google.api.client.util.DateTime;
-import com.google.api.services.calendar.model.CalendarListEntry;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventAttendee;
-import com.google.api.services.calendar.model.EventDateTime;
 import jp.co.ysk.pixy.PixyApplication;
 import jp.co.ysk.pixy.dto.ScheduleDto;
 import jp.co.ysk.pixy.dto.ScheduleListCondDto;
@@ -18,9 +13,7 @@ import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Created by ko-aoki on 2016/06/03.

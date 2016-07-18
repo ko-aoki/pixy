@@ -1,5 +1,6 @@
 package jp.co.ysk.pixy;
 
+import jp.co.ysk.pixy.filter.LogSettingFilter;
 import net.sf.log4jdbc.Log4jdbcProxyDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -70,4 +71,12 @@ public class AppConfig {
         filter.setForceEncoding(true);
         return filter;
     }
+
+    @Bean
+    LogSettingFilter logSettingFilterFilter() {
+
+        LogSettingFilter filter = new LogSettingFilter();
+        return filter;
+    }
+
 }
